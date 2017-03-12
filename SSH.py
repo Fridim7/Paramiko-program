@@ -1,6 +1,4 @@
-# import stuff
 import tkinter, paramiko, time, os
-
 class ShowInfo:
 #to run the program.
 	def __init__(self):
@@ -37,9 +35,14 @@ class ShowInfo:
 
 		self.prompt_label5 = tkinter.Label(self.mid_frame, text='Enter the name of the output file:')
 		self.name_entry = tkinter.Entry(self.mid_frame, width=10)
-		
+
 		self.prompt_label6 = tkinter.Label(self.mid_frame, text='Enter command:')
+		self.sendrouter_entry = tkinter.Entry(self.mid_frame, width=10)
+
+		self.prompt_label7 = tkinter.Label(self.mid_frame, text='Enter command:')
 		self.sendcommand_entry = tkinter.Entry(self.mid_frame, width=40)
+		
+
 		
 #pack input
 #IP
@@ -57,10 +60,13 @@ class ShowInfo:
 #Name of file
 		self.prompt_label5.pack(side='top')
 		self.name_entry.pack(side='top')
-#Send command
+#Send first command
 		self.prompt_label6.pack(side='top')
+		self.sendrouter_entry.pack(side='top')
+#Send command
+		self.prompt_label7.pack(side='top')
 		self.sendcommand_entry.pack(side='top')
-		
+
 #buttons
 		self.show_button = tkinter.Button(self.bottom_frame, text='Send command', command=self.show_data)
 		self.quit_button = tkinter.Button(self.bottom_frame, text='Quit', command=self.main_window.destroy)
@@ -99,13 +105,14 @@ class ShowInfo:
 			channel = sshClient.invoke_shell() # Create a channel object
 			time.sleep(2)
 			os.system('clear') # Clear/Whipe the terminal window
-			#channel.send('cli\n') # Enter router the Command Line Interface
+			sendrouter = self.sendrouter_entry.get()
+			channel.send(sendrouter+'\n') # Enter router the Command Line Interface
 			time.sleep(1) # Leave time for the router to enter CLI
 			routerOutput = channel.recv(100000) # Read router. Output/replies not used
 			# time.sleep(3) # Wait to buffer times out and is empty
 			# channel.send('edit\n')
-			sendcommand = sendcommand_entry.get
-			channel.send(sendcommand) # Make router list config
+			sendcommand = self.sendcommand_entry.get()
+			channel.send(sendcommand+'\n') # Make router list config
 			# shell.send('show route\n'
 			time.sleep(2) # Leave time for the router to list config
 			output = channel.recv(100000) # Read router configuration output
@@ -114,7 +121,7 @@ class ShowInfo:
 			save_path = self.dir_entry.get()
 			name_of_file = self.name_entry.get()
 
-			completeName = os.path.join(save_path, name_of_file+".cfg")
+			completeName = os.path.join(save_path, name_of_filel)
 
 			outFile = open(completeName,'wb')
 			outFile.write(output) # Save the configuration in a file
@@ -125,5 +132,3 @@ class ShowInfo:
 			print (ex)
 
 show_info=ShowInfo()
-		
-		
